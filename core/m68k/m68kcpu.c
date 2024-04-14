@@ -18,6 +18,12 @@ extern int vdp_68k_irq_ack(int int_level);
 #include "m68kconf.h"
 #include "m68kcpu.h"
 #include "m68kops.h"
+#include "../shared.h"
+
+#ifdef USE_RAM_DEEPFREEZE
+int deepfreeze_list_size;
+struct deepfreeze_list_t deepfreeze_list[MAX_DEEP_FREEZE_ENTRIES];
+#endif
 
 /* ======================================================================== */
 /* ================================= DATA ================================= */
@@ -292,7 +298,7 @@ void m68k_run(unsigned int cycles)
 
 #ifdef HOOK_CPU
     /* Trigger execution hook */
-    if (cpu_hook)
+    if (__builtin_expect(!!cpu_hook, 0))
       cpu_hook(HOOK_M68K_E, 0, REG_PC, 0);
 #endif
 

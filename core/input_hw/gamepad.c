@@ -40,13 +40,7 @@
 #include "shared.h"
 #include "gamepad.h"
 
-static struct
-{
-  uint8 State;
-  uint8 Counter;
-  uint8 Timeout;
-  uint32 Latency;
-} gamepad[MAX_DEVICES];
+struct gamepad_t gamepad[MAX_DEVICES];
 
 static struct
 {

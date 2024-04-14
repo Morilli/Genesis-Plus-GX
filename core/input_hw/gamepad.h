@@ -40,6 +40,8 @@
 #ifndef _GAMEPAD_H_
 #define _GAMEPAD_H_
 
+#include "../types.h"
+
 /* Function prototypes */
 extern void gamepad_reset(int port);
 extern void gamepad_refresh(int port);
@@ -58,5 +60,15 @@ extern unsigned char mastertap_1_read(void);
 extern unsigned char mastertap_2_read(void);
 extern void mastertap_1_write(unsigned char data, unsigned char mask);
 extern void mastertap_2_write(unsigned char data, unsigned char mask);
+
+struct gamepad_t
+{
+  uint8 State;
+  uint8 Counter;
+  uint8 Timeout;
+  uint32 Latency;
+}; 
+
+extern struct gamepad_t gamepad[MAX_DEVICES];
 
 #endif
