@@ -21,6 +21,7 @@
 #include "membnk.h"
 #include "io_ctrl.h"
 #include "input.h"
+#include "gamepad.h"
 #include "sound.h"
 #include "psg.h"
 #include "ym2413.h"
@@ -36,6 +37,7 @@
 #include "areplay.h"
 #include "svp.h"
 #include "state.h"
+#include "scrc32.h"
 
 #endif /* _SHARED_H_ */
 

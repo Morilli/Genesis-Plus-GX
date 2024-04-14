@@ -38,22 +38,8 @@
 #include "shared.h"
 #include "megasd.h"
 
-#if defined(USE_LIBTREMOR) || defined(USE_LIBVORBIS)
-#define SUPPORTED_EXT 20
-#else
-#define SUPPORTED_EXT 10
-#endif
-
-/* CD blocks scanning speed */
-#define CD_SCAN_SPEED 30
-
-/* CD tracks type (CD-DA by default) */
-#define TYPE_AUDIO 0x00
-#define TYPE_MODE1 0x01
-#define TYPE_MODE2 0x02
-
 /* BCD conversion lookup tables */
-static const uint8 lut_BCD_8[100] =
+const uint8 lut_BCD_8[100] =
 {
   0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 
   0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 
@@ -67,7 +53,7 @@ static const uint8 lut_BCD_8[100] =
   0x90, 0x91, 0x92, 0x93, 0x94, 0x95, 0x96, 0x97, 0x98, 0x99, 
 };
 
-static const uint16 lut_BCD_16[100] =
+const uint16 lut_BCD_16[100] =
 {
   0x0000, 0x0001, 0x0002, 0x0003, 0x0004, 0x0005, 0x0006, 0x0007, 0x0008, 0x0009, 
   0x0100, 0x0101, 0x0102, 0x0103, 0x0104, 0x0105, 0x0106, 0x0107, 0x0108, 0x0109, 
@@ -82,14 +68,14 @@ static const uint16 lut_BCD_16[100] =
 };
 
 /* pre-build TOC */
-static const uint16 toc_snatcher[21] =
+const uint16 toc_snatcher[21] =
 {
   56014,   495, 10120, 20555, 1580, 5417, 12502, 16090,  6553, 9681,
    8148, 20228,  8622,  6142, 5858, 1287,  7424,  3535, 31697, 2485,
   31380
 };
 
-static const uint16 toc_lunar[52] =
+const uint16 toc_lunar[52] =
 {
   5422, 1057, 7932, 5401, 6380, 6592, 5862,  5937, 5478, 5870,
   6673, 6613, 6429, 4996, 4977, 5657, 3720,  5892, 3140, 3263,
@@ -99,26 +85,26 @@ static const uint16 toc_lunar[52] =
   685, 3167
 };
 
-static const uint32 toc_shadow[15] =
+const uint32 toc_shadow[15] =
 {
   10226, 70054, 11100, 12532, 12444, 11923, 10059, 10167, 10138, 13792,
   11637,  2547,  2521,  3856, 900
 };
 
-static const uint32 toc_dungeon[13] =
+const uint32 toc_dungeon[13] =
 {
   2250, 22950, 16350, 24900, 13875, 19950, 13800, 15375, 17400, 17100,
   3325,  6825, 25275
 };
 
-static const uint32 toc_ffight[26] =
+const uint32 toc_ffight[26] =
 {
   11994, 9742, 10136, 9685, 9553, 14588, 9430, 8721, 9975, 9764,
   9704, 12796, 585, 754, 951, 624, 9047, 1068, 817, 9191, 1024,
   14562, 10320, 8627, 3795, 3047
 };
 
-static const uint32 toc_ffightj[29] =
+const uint32 toc_ffightj[29] =
 {
   11994, 9752, 10119, 9690, 9567, 14575, 9431, 8731, 9965, 9763,
   9716, 12791, 579, 751, 958, 630, 9050, 1052, 825, 9193, 1026,
@@ -127,7 +113,7 @@ static const uint32 toc_ffightj[29] =
 
 
 /* supported audio file extensions */
-static const char extensions[SUPPORTED_EXT][16] =
+const char extensions[SUPPORTED_EXT][16] =
 {
 #if defined(USE_LIBTREMOR) || defined(USE_LIBVORBIS)
   "%02d.ogg",
@@ -193,6 +179,7 @@ void cdd_init(int samplerate)
   blip_set_rates(snd.blips[2], 44100, samplerate);
 }
 
+#if 0
 void cdd_reset(void)
 {
   /* reset drive access latency */
@@ -1679,6 +1666,7 @@ void cdd_read_audio(unsigned int samples)
   /* end of blip buffer timeframe */
   blip_end_frame(snd.blips[2], samples);
 }
+#endif
 
 void cdd_update_audio(unsigned int samples)
 {
@@ -1697,7 +1685,7 @@ void cdd_update_audio(unsigned int samples)
   }
 }
 
-static void cdd_read_subcode(void)
+void cdd_read_subcode(void)
 {
   uint8 subc[96];
   int i,j,index;
@@ -1709,7 +1697,7 @@ static void cdd_read_subcode(void)
   index = (scd.regs[0x68>>1].byte.l + 0x100) >> 1;
 
   /* read interleaved subcode data from .sub file (12 x 8-bit of P subchannel first, then Q subchannel, etc) */
-  cdStreamRead(subc, 1, 96, cdd.toc.sub);
+  cdd_read_toc(subc, 96);
 
   /* convert back to raw subcode format (96 bytes with 8 x P-W subchannel bits per byte) */
   for (i=0; i<96; i+=2)
@@ -1740,6 +1728,7 @@ static void cdd_read_subcode(void)
   }
 }
 
+#if 0
 void cdd_update(void)
 {  
 #ifdef LOG_CDD
@@ -1967,6 +1956,7 @@ void cdd_update(void)
     cdd.status = scd.regs[0x42>>1].byte.h & 0x05;
   }
 }
+#endif
 
 void cdd_process(void)
 {
@@ -2142,7 +2132,70 @@ void cdd_process(void)
 
     case 0x03:  /* Play */
     {
-      /* RS0 should indicate seeking until drive is ready (fixes audio delay in Bari Arm) */
+      /* reset track index */
+      int index = 0;
+
+      /* new LBA position */
+      int lba = ((scd.regs[0x44>>1].byte.h * 10 + scd.regs[0x44>>1].byte.l) * 60 + 
+                 (scd.regs[0x46>>1].byte.h * 10 + scd.regs[0x46>>1].byte.l)) * 75 +
+                 (scd.regs[0x48>>1].byte.h * 10 + scd.regs[0x48>>1].byte.l) - 150;
+
+      /* CD drive latency */
+      if (!cdd.latency)
+      {
+        /* Fixes a few games hanging because they expect data to be read with some delay */
+        /* Wolf Team games (Annet Futatabi, Aisle Lord, Cobra Command, Earnest Evans, Road Avenger & Time Gal) need at least 11 interrupts delay  */
+        /* Space Adventure Cobra (2nd morgue scene) needs at least 13 interrupts delay (incl. seek time, so 11 is OK) */
+        /* By default, at least two interrupts latency is required by current emulation model (BIOS hangs otherwise) */
+        cdd.latency = 2 + 9*config.cd_latency;
+      }
+
+      /* CD drive seek time */
+      /* max. seek time = 1.5 s = 1.5 x 75 = 112.5 CDD interrupts (rounded to 120) for 270000 sectors max on disc. */
+      /* Note: This is only a rough approximation since, on real hardware, seek time is much likely not linear and */
+      /* latency much larger than above value, but this model works fine for Sonic CD (track 26 playback needs to  */
+      /* be enough delayed to start in sync with intro sequence, as compared with real hardware recording).        */
+      if (lba > cdd.lba)
+      {
+        cdd.latency += (((lba - cdd.lba) * 120 * config.cd_latency) / 270000);
+      }
+      else 
+      {
+        cdd.latency += (((cdd.lba - lba) * 120 * config.cd_latency) / 270000);
+      }
+
+      /* update current LBA */
+      cdd.lba = lba;
+
+      /* get track index */
+      while ((cdd.toc.tracks[index].end <= lba) && (index < cdd.toc.last)) index++;
+
+      /* audio track ? */
+      if (cdd.toc.tracks[index].type == TYPE_AUDIO)
+      {
+        /* stay within track limits when seeking files */
+        if (lba < cdd.toc.tracks[index].start) 
+        {
+          lba = cdd.toc.tracks[index].start;
+        }
+
+        /* seek to current track sector */
+        cdd_seek_audio(index, lba);
+      }
+
+      /* update current track index */
+      cdd.index = index;
+
+      /* seek to current subcode position */
+	  cdd_seek_toc(lba * 96);
+
+      /* no audio track playing (yet) */
+      scd.regs[0x36>>1].byte.h = 0x01;
+
+      /* update status (reported to host once seeking has ended) */
+      cdd.status = CD_PLAY;
+
+      /* RS0 should indicates seeking until drive is ready (fixes audio delay in Bari Arm) */
       /* RS1=0xf to invalidate track infos in RS2-RS8 until drive is ready (fixes Snatcher Act 2 start cutscene) */
       scd.regs[0x38>>1].w = (CD_SEEK << 8) | 0x0f;
       scd.regs[0x3a>>1].w = 0x0000;
@@ -2154,6 +2207,58 @@ void cdd_process(void)
 
     case 0x04:  /* Seek */
     {
+      /* reset track index */
+      int index = 0;
+
+      /* new LBA position */
+      int lba = ((scd.regs[0x44>>1].byte.h * 10 + scd.regs[0x44>>1].byte.l) * 60 + 
+                 (scd.regs[0x46>>1].byte.h * 10 + scd.regs[0x46>>1].byte.l)) * 75 +
+                 (scd.regs[0x48>>1].byte.h * 10 + scd.regs[0x48>>1].byte.l) - 150;
+
+      /* CD drive seek time  */
+      /* We are using similar linear model as above, although still not exactly accurate, */
+      /* it works fine for Switch/Panic! intro (Switch needs at least 30 interrupts while */
+      /* seeking from 00:05:63 to 24:03:19, Panic! when seeking from 00:05:60 to 24:06:07) */
+      if (lba > cdd.lba)
+      {
+        cdd.latency = ((lba - cdd.lba) * 120 * config.cd_latency) / 270000;
+      }
+      else
+      {
+        cdd.latency = ((cdd.lba - lba) * 120 * config.cd_latency) / 270000;
+      }
+
+      /* update current LBA */
+      cdd.lba = lba;
+
+      /* get current track index */
+      while ((cdd.toc.tracks[index].end <= lba) && (index < cdd.toc.last)) index++;
+
+      /* audio track ? */
+      if (cdd.toc.tracks[index].type == TYPE_AUDIO)
+      {
+        /* stay within track limits when seeking files */
+        if (lba < cdd.toc.tracks[index].start) 
+        {
+          lba = cdd.toc.tracks[index].start;
+        }
+
+        /* seek to current track sector */
+        cdd_seek_audio(index, lba);
+      }
+
+      /* update current track index */
+      cdd.index = index;
+
+      /* seek to current subcode position */
+	  cdd_seek_toc(lba * 96);
+
+      /* no audio track playing */
+      scd.regs[0x36>>1].byte.h = 0x01;
+
+      /* update status (reported to host once seeking has ended) */
+      cdd.status = CD_PAUSE;
+
       /* RS1=0xf to invalidate track infos in RS2-RS8 while seeking (fixes Final Fight CD intro when seek time is emulated) */
       scd.regs[0x38>>1].w = (CD_SEEK << 8) | 0x0f;
       scd.regs[0x3a>>1].w = 0x0000;
@@ -2275,4 +2380,20 @@ void cdd_process(void)
                                scd.regs[0x3c>>1].byte.h + scd.regs[0x3c>>1].byte.l +
                                scd.regs[0x3e>>1].byte.h + scd.regs[0x3e>>1].byte.l +
                                scd.regs[0x40>>1].byte.h) & 0x0f;
+}
+
+void cdd_hotswap(const toc_t *toc)
+{
+	if (toc)
+	{
+		cdd.loaded = 1;
+		memcpy(&cdd.toc, toc, sizeof(cdd.toc));
+	}
+	else
+	{
+		cdd.loaded = 0;
+		memset(&cdd.toc, 0x00, sizeof(cdd.toc));
+	}
+
+	cdd_reset();
 }
