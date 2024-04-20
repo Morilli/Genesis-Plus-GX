@@ -860,7 +860,7 @@ INLINE uint m68ki_read_8(uint address)
   else val = READ_BYTE(temp->base, (address) & 0xffff);
 
 #ifdef HOOK_CPU
-  if (__builtin_expect(!!cpu_hook, 0))
+  if (UNLIKELY(cpu_hook))
     cpu_hook(HOOK_M68K_R, 1, address, val);
 #endif
 
@@ -880,7 +880,7 @@ INLINE uint m68ki_read_16(uint address)
   else val = *(uint16 *)(temp->base + ((address) & 0xffff));
 
 #ifdef HOOK_CPU
-  if (__builtin_expect(!!cpu_hook, 0))
+  if (UNLIKELY(cpu_hook))
     cpu_hook(HOOK_M68K_R, 2, address, val);
 #endif
 
@@ -900,7 +900,7 @@ INLINE uint m68ki_read_32(uint address)
   else val = m68k_read_immediate_32(address);
 
 #ifdef HOOK_CPU
-  if (__builtin_expect(!!cpu_hook, 0))
+  if (UNLIKELY(cpu_hook))
     cpu_hook(HOOK_M68K_R, 4, address, val);
 #endif
 
@@ -914,7 +914,7 @@ INLINE void m68ki_write_8(uint address, uint value)
   m68ki_set_fc(FLAG_S | FUNCTION_CODE_USER_DATA) /* auto-disable (see m68kcpu.h) */
 
 #ifdef HOOK_CPU
-  if (__builtin_expect(!!cpu_hook, 0))
+  if (UNLIKELY(cpu_hook))
     cpu_hook(HOOK_M68K_W, 1, address, value);
 #endif
 
@@ -923,7 +923,7 @@ INLINE void m68ki_write_8(uint address, uint value)
   else WRITE_BYTE(temp->base, (address) & 0xffff, value);
 
 #ifdef USE_RAM_DEEPFREEZE
-  if (__builtin_expect(deepfreeze_list_size, 0))
+  if (UNLIKELY(deepfreeze_list_size))
     for (size_t i = 0; i < deepfreeze_list_size; i++)
       work_ram[deepfreeze_list[i].address] = deepfreeze_list[i].value;
 #endif
@@ -937,7 +937,7 @@ INLINE void m68ki_write_16(uint address, uint value)
   m68ki_check_address_error(address, MODE_WRITE, FLAG_S | FUNCTION_CODE_USER_DATA); /* auto-disable (see m68kcpu.h) */
 
 #ifdef HOOK_CPU
-  if (__builtin_expect(!!cpu_hook, 0))
+  if (UNLIKELY(cpu_hook))
     cpu_hook(HOOK_M68K_W, 2, address, value);
 #endif
 
@@ -946,7 +946,7 @@ INLINE void m68ki_write_16(uint address, uint value)
   else *(uint16 *)(temp->base + ((address) & 0xffff)) = value;
 
 #ifdef USE_RAM_DEEPFREEZE
-  if (__builtin_expect(deepfreeze_list_size, 0))
+  if (UNLIKELY(deepfreeze_list_size))
     for (size_t i = 0; i < deepfreeze_list_size; i++)
       work_ram[deepfreeze_list[i].address] = deepfreeze_list[i].value;
 #endif
@@ -960,7 +960,7 @@ INLINE void m68ki_write_32(uint address, uint value)
   m68ki_check_address_error(address, MODE_WRITE, FLAG_S | FUNCTION_CODE_USER_DATA) /* auto-disable (see m68kcpu.h) */
 
 #ifdef HOOK_CPU
-  if (__builtin_expect(!!cpu_hook, 0))
+  if (UNLIKELY(cpu_hook))
     cpu_hook(HOOK_M68K_W, 4, address, value);
 #endif
 
@@ -973,7 +973,7 @@ INLINE void m68ki_write_32(uint address, uint value)
   else *(uint16 *)(temp->base + ((address + 2) & 0xffff)) = value;
 
 #ifdef USE_RAM_DEEPFREEZE
-  if (__builtin_expect(deepfreeze_list_size, 0))
+  if (UNLIKELY(deepfreeze_list_size))
     for (size_t i = 0; i < deepfreeze_list_size; i++)
       work_ram[deepfreeze_list[i].address] = deepfreeze_list[i].value;
 #endif
