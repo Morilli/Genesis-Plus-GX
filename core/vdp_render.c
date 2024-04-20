@@ -1758,11 +1758,11 @@ void render_bg_m5_vs(int line)
     for(column = 0; column < end; column++, index++)
     {
       /* Plane B vertical scroll */
-  #ifdef LSB_FIRST
+#ifdef LSB_FIRST
       v_line = (line + (vs[column] >> 16)) & pf_row_mask;
-  #else
+#else
       v_line = (line + vs[column]) & pf_row_mask;
-  #endif
+#endif
 
       /* Plane B name table */
       nt = (uint32 *)&vram[ntbb + (((v_line >> 3) << pf_shift) & 0x1FC0)];
@@ -2413,11 +2413,11 @@ void render_bg_m5_im2_vs(int line)
     for(column = 0; column < end; column++, index++)
     {
       /* Plane B vertical scroll */
-  #ifdef LSB_FIRST
+#ifdef LSB_FIRST
       v_line = (line + (vs[column] >> 17)) & pf_row_mask;
-  #else
+#else
       v_line = (line + (vs[column] >> 1)) & pf_row_mask;
-  #endif
+#endif
 
       /* Plane B name table */
       nt = (uint32 *)&vram[ntbb + (((v_line >> 3) << pf_shift) & 0x1FC0)];
