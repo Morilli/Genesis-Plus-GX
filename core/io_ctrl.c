@@ -536,6 +536,10 @@ unsigned int io_z80_read(unsigned int offset)
   /* I/O ports */
   if (offset)
   {
+    #ifdef USE_BIZHAWK_CALLBACKS
+	  real_input_callback(); 
+    #endif
+
    /* 
      Bit  Function
      --------------
@@ -639,6 +643,11 @@ void io_gg_write(unsigned int offset, unsigned int data)
 
 unsigned int io_gg_read(unsigned int offset)
 {
+  #ifdef USE_BIZHAWK_CALLBACKS
+	  real_input_callback(); 
+  #endif
+
+
   switch (offset)
   {
     case 0: /* Mode Register */
