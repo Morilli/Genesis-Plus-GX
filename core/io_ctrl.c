@@ -50,10 +50,6 @@
 #include "sportspad.h"
 #include "graphic_board.h"
 
-#ifdef USE_BIZHAWK_CALLBACKS
-	extern void  real_input_callback(); 
-#endif
-
 uint8 io_reg[0x10];
 
 uint8 region_code = REGION_USA;
@@ -455,9 +451,10 @@ unsigned int io_68k_read(unsigned int offset)
         D1 : D1 pin input level (1=high, 0=low)
         D0 : D0 pin input level (1=high, 0=low)
       */
-     
+
 #ifdef USE_BIZHAWK_CALLBACKS
-	  real_input_callback(); 
+      extern void real_input_callback(void);
+      real_input_callback();
 #endif
 
       unsigned int mask = 0x80 | io_reg[offset + 3];

@@ -8,7 +8,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
-#include <stdint.h>
 
 #if M68K_EMULATE_ADDRESS_ERROR
 #include <setjmp.h>
@@ -924,7 +923,7 @@ INLINE void m68ki_write_8(uint address, uint value)
 
 #ifdef USE_RAM_DEEPFREEZE
   if (UNLIKELY(deepfreeze_list_size))
-    for (size_t i = 0; i < deepfreeze_list_size; i++)
+    for (int i = 0; i < deepfreeze_list_size; i++)
       work_ram[deepfreeze_list[i].address] = deepfreeze_list[i].value;
 #endif
 }
@@ -947,7 +946,7 @@ INLINE void m68ki_write_16(uint address, uint value)
 
 #ifdef USE_RAM_DEEPFREEZE
   if (UNLIKELY(deepfreeze_list_size))
-    for (size_t i = 0; i < deepfreeze_list_size; i++)
+    for (int i = 0; i < deepfreeze_list_size; i++)
       work_ram[deepfreeze_list[i].address] = deepfreeze_list[i].value;
 #endif
 }
@@ -974,7 +973,7 @@ INLINE void m68ki_write_32(uint address, uint value)
 
 #ifdef USE_RAM_DEEPFREEZE
   if (UNLIKELY(deepfreeze_list_size))
-    for (size_t i = 0; i < deepfreeze_list_size; i++)
+    for (int i = 0; i < deepfreeze_list_size; i++)
       work_ram[deepfreeze_list[i].address] = deepfreeze_list[i].value;
 #endif
 }

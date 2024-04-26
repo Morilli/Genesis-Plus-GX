@@ -37,10 +37,9 @@
  ****************************************************************************************/
 
 #include "shared.h"
-#include "eeprom_i2c.h"
 
 T_SRAM sram;
-int force_sram = 0;
+extern int cinterface_force_sram;
 
 /****************************************************************************
  * A quick guide to external RAM on the Genesis
@@ -214,6 +213,7 @@ void sram_init(void)
     /* by default, enable backup RAM for ROM smaller than 2MB */
     else if (cart.romsize <= 0x200000)
     {
+      if (!cinterface_force_sram) return; /* BizHawk controls this default rather */
       /* 64KB static RAM mapped to $200000-$20ffff */
       sram.start = 0x200000;
       sram.end = 0x20ffff;
@@ -240,34 +240,4 @@ void sram_write_byte(unsigned int address, unsigned int data)
 void sram_write_word(unsigned int address, unsigned int data)
 {
   WRITE_WORD(sram.sram, address & 0xfffe, data);
-}
-
-
-// the variables in SRAM_T are all part of "configuration", so we don't have to save those.
-// the only thing that needs to be saved is the SRAM itself and the SEEPROM struct (if applicable)
-
-int sram_get_actual_size()
-{
-	if (!sram.on)
-		return 0;
-	switch (sram.custom)
-	{
-	case 0: // plain bus access saveram
-		break;
-	case 1: // i2c
-		return eeprom_i2c.spec.size_mask + 1;
-	case 2: // spi
-		return 0x10000; // it doesn't appear to mask anything internally
-	case 3: // 93c
-		return 0x10000; // SMS only and i don't have time to look into it
-	default:
-		return 0x10000; // who knows
-	}
-	// figure size for plain bus access saverams
-	{
-		int startaddr = sram.start / 8192;
-		int endaddr = sram.end / 8192 + 1;
-		int size = (endaddr - startaddr) * 8192;
-		return size;
-	}
 }

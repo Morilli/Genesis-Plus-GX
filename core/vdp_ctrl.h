@@ -45,7 +45,7 @@
 /* VDP context */
 extern uint8 reg[0x20];
 extern uint8 sat[0x400];
-extern uint8 ALIGNED_(4) vram[0x10000];
+extern uint8 vram[0x10000];
 extern uint8 cram[0x80];
 extern uint8 vsram[0x80];
 extern uint8 hint_pending;
@@ -104,10 +104,5 @@ extern unsigned int vdp_z80_ctrl_r(unsigned int cycles);
 extern unsigned int vdp_hvc_r(unsigned int cycles);
 extern void vdp_test_w(unsigned int data);
 extern int vdp_68k_irq_ack(int int_level);
-
-void write_cram_byte(int addr, uint8 val);
-void write_vram_byte(int addr, uint8 val);
-void flush_vram_cache(void);
-void vdp_invalidate_full_cache(void);
 
 #endif /* _VDP_H_ */

@@ -56,11 +56,11 @@
 
 #define MAX_DEEP_FREEZE_ENTRIES 1024
 
-struct deepfreeze_list_t 
+struct deepfreeze_list_t
 {
   int address;
   uint8_t value;
-}; 
+};
 
 extern int deepfreeze_list_size;
 extern struct deepfreeze_list_t deepfreeze_list[MAX_DEEP_FREEZE_ENTRIES];

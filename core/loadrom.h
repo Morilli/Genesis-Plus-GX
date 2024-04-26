@@ -41,7 +41,7 @@
 #define _LOADROM_H_
 
 #ifndef MAXROMSIZE
-#define MAXROMSIZE (32*1024*1024)
+#define MAXROMSIZE 10485760
 #endif
 
 typedef struct
@@ -67,7 +67,7 @@ extern uint8 romtype;
 
 /* Function prototypes */
 extern int load_bios(int system);
-extern int load_rom(const char *romFile, const char* primaryCD, const char* secondaryCD);
+extern int load_rom(char *filename);
 extern void get_region(char *romheader);
 extern char *get_company(void);
 extern char *get_peripheral(int index);
