@@ -47,11 +47,7 @@
 #include "scd.h"
 
 /* External Hardware */
-/* Changed to struct from the upstream's 'union' type. This is necessary to prevent
-   cartridge and CD data+metadata from interfering with each other. Curiously, this latent
-   bug wouldn't manifest in native compilation, but only in Bizhawk. It remains a potential
-   issue in upstream nevertheless so we fix it here by changing it to a struct (non-overlapped data) */
-typedef struct
+typedef union
 {
   md_cart_t md_cart;
   cd_hw_t cd_hw;
