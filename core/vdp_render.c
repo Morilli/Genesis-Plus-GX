@@ -1557,16 +1557,14 @@ void render_bg_m5(int line)
   uint32 v_line = (line + yscroll) & pf_row_mask;
 #endif
 
-  /* Plane B name table */
-  uint32 *nt;
-
   if (!cinterface_render_bgb)
   {
     memset(&linebuf[0][0], 0, 512);
     goto end_render_bgb;
   }
 
-  nt = (uint32 *)&vram[ntbb + (((v_line >> 3) << pf_shift) & 0x1FC0)];
+  /* Plane B name table */
+  uint32 *nt = (uint32 *)&vram[ntbb + (((v_line >> 3) << pf_shift) & 0x1FC0)];
 
   /* Pattern row index */
   v_line = (v_line & 7) << 3;
@@ -2214,15 +2212,14 @@ void render_bg_m5_im2(int line)
   uint32 v_line = (line + (yscroll >> 1)) & pf_row_mask;
 #endif
 
-  /* Plane B name table */
-  uint32 *nt;
   if (!cinterface_render_bgb)
   {
     memset(&linebuf[0][0], 0, 512);
     goto end_render_bgb;
   }
 
-  nt = (uint32 *)&vram[ntbb + (((v_line >> 3) << pf_shift) & 0x1FC0)];
+  /* Plane B name table */
+  uint32 *nt = (uint32 *)&vram[ntbb + (((v_line >> 3) << pf_shift) & 0x1FC0)];
 
   /* Pattern row index */
   v_line = (((v_line & 7) << 1) | odd) << 3;
