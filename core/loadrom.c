@@ -618,17 +618,17 @@ int load_rom(char *filename)
     *(uint32 *)(extension) &= 0xdfdfdfdf;
 
     /* auto-detect system hardware from ROM file extension */
-    if (!memcmp("SMS", extension, 3))
+    if (!memcmp("SMS", &extension[0], 3))
     {
       /* Master System II hardware */
       system_hw = SYSTEM_SMS2;
     }
-    else if (!memcmp("GG", extension, 2))
+    else if (!memcmp("GG", &extension[1], 2))
     {
       /* Game Gear hardware (GG mode) */
       system_hw = SYSTEM_GG;
     }
-    else if (!memcmp("SG", extension, 2))
+    else if (!memcmp("SG", &extension[1], 2))
     {
       /* SG-1000 hardware */
       system_hw = SYSTEM_SG;
@@ -639,7 +639,7 @@ int load_rom(char *filename)
       system_hw = SYSTEM_MD;
 
       /* decode .MDX format */
-      if (!memcmp("MDX", extension, 3))
+      if (!memcmp("MDX", &extension[0], 3))
       {
         for (i = 4; i < size - 1; i++)
         {
